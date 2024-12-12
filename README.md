@@ -35,7 +35,7 @@ SR Linux also supports command aliases which can be saved on a per-user basis or
 
 Our initial focus will be on `show` commands.
 
-## Learn how to customize SR CLI
+## Learn how to customize SR Linux CLI
 
 For those intereted in learning the process of customizing the SR Linux CLI, refer to the official [SR Linux CLI plug-in guide](https://documentation.nokia.com/srlinux/24-10/title/cli_plugin.html).
 
