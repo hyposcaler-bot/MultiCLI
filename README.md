@@ -58,10 +58,10 @@ For this initial release, we are providing scripts for Arista and more providers
 
 Within each provider's folder, you will find sub-folders with the feature name that we are targeting. This sub-folder will hold the python scripts and references to lab topologies to test these scripts. In this initial release, we have scripts for Arista EVPN show commands.
 
-[Arista](Arista/)
-Cisco (coming soon)
-Juniper (coming soon)
-SR OS (coming soon)
+- [Arista](Arista/)
+- Cisco (coming soon)
+- Juniper (coming soon)
+- SR OS (coming soon)
 
 ## Resources for further learning
 
