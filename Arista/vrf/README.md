@@ -8,7 +8,7 @@ Use the **Lab** to test the custom CLI plugin. The lab comes with options to con
 
 |   |   |   |   |
 |---|---|---|---|
-| `show ip route vrf <vrf-name>` | [Details](#show-ip-route-vrf) | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
+| `show ip route vrf <vrf-name>` | [Details](#show-ip-route-vrf) | Alias | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
 
 ## show ip route vrf
 
