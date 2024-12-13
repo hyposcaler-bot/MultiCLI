@@ -8,12 +8,12 @@ Use the **Lab** to test the custom CLI plugin. The lab comes with options to con
 
 |   |   |   |   |
 |---|---|---|---|
-| `show mac address-table` | [Details](#show-bgp-evpn-route-type-mac-ip) | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
+| `show mac address-table` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
 | `show vxlan address-table` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
-| `show bgp evpn route-type mac-ip` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
-| `show bgp evpn route-type imet` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
-| `show bgp evpn route-type ip-prefix` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
-| `show bgp evpn summary` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
+| `show bgp evpn route-type mac-ip` | [Details](#show-bgp-evpn-route-type-mac-ip) | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
+| `show bgp evpn route-type imet` | [Details](#show-bgp-evpn-route-type-imet) | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
+| `show bgp evpn route-type ip-prefix` | [Details](#show-bgp-evpn-route-type-ip-prefix) | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
+| `show bgp evpn summary` | [Details](#show-bgp-evpn-summary) | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
 
 ## show mac address-table
 
@@ -283,5 +283,144 @@ Optionally you may also run:
 - `show bgp evpn route-type ip-prefix <ip-address>`
 - `show bgp evpn route-type ip-prefix vrf <vrf-name>`
 - `show bgp evpn route-type ip-prefix <ip-address> vrf <vrf-name>`
+
+## show bgp evpn summary
+
+The standard SR Linux command to display EVPN Route Type summary is:
+
+```srl
+show network-instance default protocols bgp routes evpn route-type summary
+```
+
+Expected output:
+
+```srl
+------------------------------------------------------------------------------------------------------------------------------------------------
+Show report for the BGP route table of network-instance "default"
+------------------------------------------------------------------------------------------------------------------------------------------------
+Status codes: u=used, *=valid, >=best, x=stale
+Origin codes: i=IGP, e=EGP, ?=incomplete
+------------------------------------------------------------------------------------------------------------------------------------------------
+BGP Router ID: 1.1.1.1      AS: 64501      Local AS: 64501
+------------------------------------------------------------------------------------------------------------------------------------------------
+Type 2 MAC-IP Advertisement Routes
++-------+------------+----------+----------------+------------+------------+------------+------------+---------------------------+------------+
+| Statu | Route-dist |  Tag-ID  |  MAC-address   | IP-address |  neighbor  |  Next-Hop  |   Label    |            ESI            |    MAC     |
+|   s   | inguisher  |          |                |            |            |            |            |                           |  Mobility  |
++=======+============+==========+================+============+============+============+============+===========================+============+
+| u*>   | 2.2.2.2:10 | 0        | AA:C1:AB:FF:E1 | 0.0.0.0    | 2.2.2.2    | 2.2.2.2    | 100        | 00:00:00:00:00:00:00:00:0 | -          |
+|       | 0          |          | :F2            |            |            |            |            | 0:00                      |            |
+| *     | 2.2.2.2:10 | 0        | AA:C1:AB:FF:E1 | 0.0.0.0    | 2001::2    | 2.2.2.2    | 100        | 00:00:00:00:00:00:00:00:0 | -          |
+|       | 0          |          | :F2            |            |            |            |            | 0:00                      |            |
++-------+------------+----------+----------------+------------+------------+------------+------------+---------------------------+------------+
+------------------------------------------------------------------------------------------------------------------------------------------------
+Type 3 Inclusive Multicast Ethernet Tag Routes
++--------+--------------------------------+------------+---------------------+--------------------------------+--------------------------------+
+| Status |      Route-distinguisher       |   Tag-ID   |    Originator-IP    |            neighbor            |            Next-Hop            |
++========+================================+============+=====================+================================+================================+
+| u*>    | 2.2.2.2:100                    | 0          | 2.2.2.2             | 2.2.2.2                        | 2.2.2.2                        |
+| *      | 2.2.2.2:100                    | 0          | 2.2.2.2             | 2001::2                        | 2.2.2.2                        |
++--------+--------------------------------+------------+---------------------+--------------------------------+--------------------------------+
+------------------------------------------------------------------------------------------------------------------------------------------------
+Type 5 IP Prefix Routes
++--------+------------------+------------+---------------------+------------------+------------------+------------------+------------------+
+| Status |      Route-      |   Tag-ID   |     IP-address      |     neighbor     |     Next-Hop     |      Label       |     Gateway      |
+|        |  distinguisher   |            |                     |                  |                  |                  |                  |
++========+==================+============+=====================+==================+==================+==================+==================+
+| u*>    | 2.2.2.2:200      | 0          | 10.90.1.0/24        | 2.2.2.2          | 2.2.2.2          | 200              | 0.0.0.0          |
+| *      | 2.2.2.2:200      | 0          | 10.90.1.0/24        | 2001::2          | 2.2.2.2          | 200              | 0.0.0.0          |
+| u*>    | 2.2.2.2:200      | 0          | 10:90:1::/64        | 2.2.2.2          | 2.2.2.2          | 200              | ::               |
+| *      | 2.2.2.2:200      | 0          | 10:90:1::/64        | 2001::2          | 2.2.2.2          | 200              | ::               |
++--------+------------------+------------+---------------------+------------------+------------------+------------------+------------------+
+------------------------------------------------------------------------------------------------------------------------------------------------
+0 Ethernet Auto-Discovery routes 0 used, 0 valid
+2 MAC-IP Advertisement routes 1 used, 2 valid
+2 Inclusive Multicast Ethernet Tag routes 1 used, 2 valid
+0 Ethernet Segment routes 0 used, 0 valid
+4 IP Prefix routes 2 used, 4 valid
+0 Selective Multicast Ethernet Tag routes 0 used, 0 valid
+0 Selective Multicast Membership Report Sync routes 0 used, 0 valid
+0 Selective Multicast Leave Sync routes 0 used, 0 valid
+------------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+With the custom CLI plugin, we are adding `VRF`, `Local-Pref` and `Origin` columns for route types.
+
+For the command syntax, we will follow the EOS command with the option to add `vrf` name at the end that equates to `network-instance` in SR Linux.
+
+Since specifying `vrf` is optional, by default, the command will search for routes in all VRFs (network instances) and the `VRF` column in the output helps to identify the VRF name of each route.
+
+The custom CLI command help section (type `?` to display help) looks like:
+
+```srl
+A:leaf1# show bgp evpn summary ?
+usage: summary [vrf <value>]
+
+Show all EVPN Route Types
+
+Named arguments:
+  vrf               network instance (VRF) name
+```
+
+Let's take a look the custom CLI plugin output. The command is:
+
+```srl
+show bgp evpn summary
+```
+
+Expected output:
+
+```srl
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Show report for the BGP route table of network-instance "*"
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Status codes: u=used, *=valid, >=best, x=stale
+Origin codes: i=IGP, e=EGP, ?=incomplete
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+BGP Router ID: 1.1.1.1      AS: 64501      Local AS: 64501
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Type 2 MAC-IP Advertisement Routes
++-----------------+--------+-----------------+-------------------+-----------------+-----------------+-----------------+-----------------+-----------------+
+|       VRF       | Status |     Route-      |    MAC-address    |   IP-address    |    Neighbor     |    Next-Hop     |   Local-Pref    |     Origin      |
+|                 |        |  distinguisher  |                   |                 |                 |                 |                 |                 |
++=================+========+=================+===================+=================+=================+=================+=================+=================+
+| default         | u*>    | 2.2.2.2:100     | AA:C1:AB:FF:E1:F2 | 0.0.0.0         | 2.2.2.2         | 2.2.2.2         | 100             | igp             |
+| default         | *      | 2.2.2.2:100     | AA:C1:AB:FF:E1:F2 | 0.0.0.0         | 2001::2         | 2.2.2.2         | 100             | igp             |
++-----------------+--------+-----------------+-------------------+-----------------+-----------------+-----------------+-----------------+-----------------+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Type 3 Inclusive Multicast Ethernet Tag Routes
++-----------------+--------+-----------------+-----------------+---------------------+-----------------+-----------------+-----------------+-----------------+
+|       VRF       | Status |     Route-      |     Tag-ID      |    Originator-IP    |    neighbor     |    Next-Hop     |   Local-Pref    |     Origin      |
+|                 |        |  distinguisher  |                 |                     |                 |                 |                 |                 |
++=================+========+=================+=================+=====================+=================+=================+=================+=================+
+| default         | u*>    | 2.2.2.2:100     | 0               | 2.2.2.2             | 2.2.2.2         | 2.2.2.2         | 100             | igp             |
+| default         | *      | 2.2.2.2:100     | 0               | 2.2.2.2             | 2001::2         | 2.2.2.2         | 100             | igp             |
++-----------------+--------+-----------------+-----------------+---------------------+-----------------+-----------------+-----------------+-----------------+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Type 5 IP Prefix Routes
++-----------------+--------+-----------------+-----------------+---------------------+-----------------+-----------------+-----------------+-----------------+
+|       VRF       | Status |     Route-      |     Tag-ID      |     IP-address      |    neighbor     |    Next-Hop     |   Local-Pref    |     Origin      |
+|                 |        |  distinguisher  |                 |                     |                 |                 |                 |                 |
++=================+========+=================+=================+=====================+=================+=================+=================+=================+
+| default         | u*>    | 2.2.2.2:200     | 0               | 10.90.1.0/24        | 2.2.2.2         | 2.2.2.2         | 100             | igp             |
+| default         | *      | 2.2.2.2:200     | 0               | 10.90.1.0/24        | 2001::2         | 2.2.2.2         | 100             | igp             |
+| default         | u*>    | 2.2.2.2:200     | 0               | 10:90:1::/64        | 2.2.2.2         | 2.2.2.2         | 100             | igp             |
+| default         | *      | 2.2.2.2:200     | 0               | 10:90:1::/64        | 2001::2         | 2.2.2.2         | 100             | igp             |
++-----------------+--------+-----------------+-----------------+---------------------+-----------------+-----------------+-----------------+-----------------+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+0 Ethernet Auto-Discovery routes 0 used, 0 valid
+2 MAC-IP Advertisement routes 1 used, 2 valid
+2 Inclusive Multicast Ethernet Tag routes 1 used, 2 valid
+0 Ethernet Segment routes 0 used, 0 valid
+4 IP Prefix routes 2 used, 4 valid
+0 Selective Multicast Ethernet Tag routes 0 used, 0 valid
+0 Selective Multicast Membership Report Sync routes 0 used, 0 valid
+0 Selective Multicast Leave Sync routes 0 used, 0 valid
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+Optionally you may also run:
+- `show bgp evpn summary vrf <vrf-name>`
+
 
 
