@@ -8,7 +8,7 @@ Use the **Lab** to test the custom CLI plugin. The lab comes with options to con
 
 |   |   |   |   |
 |---|---|---|---|
-| `show mac address-table` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
+| `show mac address-table` | [Details](#show-bgp-evpn-route-type-mac-ip) | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
 | `show vxlan address-table` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
 | `show bgp evpn route-type mac-ip` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
 | `show bgp evpn route-type imet` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
@@ -55,9 +55,23 @@ Type 2 MAC-IP Advertisement Routes
 
 With the custom CLI plugin, we are removing the `Label`, `ESI`, and `MAC Mobility` columns and adding `VRF`, `Local-Pref` and `Origin` columns.
 
-For the command syntax, we will follow the Arista command with the option to add `vrf` name at the end that equates to `network-instance` in SR Linux. An unnamed argument to filter on a specific `mac-address` is also added.
+For the command syntax, we will follow the EOS command with the option to add `vrf` name at the end that equates to `network-instance` in SR Linux. An unnamed argument to filter on a specific `mac-address` is also added.
 
 Since specifying `vrf` is optional, by default, the command will search for routes in all VRFs (network instances) and the `VRF` column in the output helps to identify the VRF name of each route.
+
+The custom CLI command help section (type `?` to display help) looks like:
+
+```srl
+A:leaf1# show bgp evpn route-type mac-ip ?
+usage: mac-ip [<mac-address>] [vrf <value>]
+
+Positional arguments:
+  mac-address       MAC address
+
+Named arguments:
+  vrf               network instance name
+```
+
 
 Let's take a look the custom CLI plugin output. The command is:
 
@@ -89,10 +103,185 @@ Type 2 MAC-IP Advertisement Routes
 ```
 
 As you can see, the new columns `VRF`, `Local-Pref` and `Origin` are now displayed.
+
 Optionally you may also run:
 - `show bgp evpn route-type mac-ip <mac-address>`
 - `show bgp evpn route-type mac-ip vrf <vrf-name>`
 - `show bgp evpn route-type mac-ip <mac-address> vrf <vrf-name>`
 
+## show bgp evpn route-type imet
+
+The standard SR Linux command to display EVPN Route Type 3 (IMET) is:
+
+```srl
+show network-instance default protocols bgp routes evpn route-type 3 summary
+```
+
+Expected output:
+
+```srl
+------------------------------------------------------------------------------------------------------------------------
+Show report for the BGP route table of network-instance "default"
+------------------------------------------------------------------------------------------------------------------------
+Status codes: u=used, *=valid, >=best, x=stale
+Origin codes: i=IGP, e=EGP, ?=incomplete
+------------------------------------------------------------------------------------------------------------------------
+BGP Router ID: 1.1.1.1      AS: 64501      Local AS: 64501
+------------------------------------------------------------------------------------------------------------------------
+Type 3 Inclusive Multicast Ethernet Tag Routes
++--------+------------------------+------------+---------------------+------------------------+------------------------+
+| Status |  Route-distinguisher   |   Tag-ID   |    Originator-IP    |        neighbor        |        Next-Hop        |
++========+========================+============+=====================+========================+========================+
+| u*>    | 2.2.2.2:100            | 0          | 2.2.2.2             | 2.2.2.2                | 2.2.2.2                |
+| *      | 2.2.2.2:100            | 0          | 2.2.2.2             | 2001::2                | 2.2.2.2                |
++--------+------------------------+------------+---------------------+------------------------+------------------------+
+------------------------------------------------------------------------------------------------------------------------
+2 Inclusive Multicast Ethernet Tag routes 1 used, 2 valid
+------------------------------------------------------------------------------------------------------------------------+
+```
+
+With the custom CLI plugin, we are adding `VRF`, `Local-Pref` and `Origin` columns.
+
+For the command syntax, we will follow the EOS command with the option to add `vrf` name at the end that equates to `network-instance` in SR Linux. An unnamed argument to filter on a specific `origin-router` IP is also added.
+
+Since specifying `vrf` is optional, by default, the command will search for routes in all VRFs (network instances) and the `VRF` column in the output helps to identify the VRF name of each route.
+
+The custom CLI command help section (type `?` to display help) looks like:
+
+```srl
+A:leaf1# show bgp evpn route-type imet ?
+usage: imet [<origin-router>] [vrf <value>]
+
+Positional arguments:
+  origin-router     Originating router IPv4 or IPv6 address
+
+Named arguments:
+  vrf               network instance name
+```
+
+Let's take a look the custom CLI plugin output. The command is:
+
+```srl
+show bgp evpn route-type imet
+```
+
+Expected output:
+
+```srl
+------------------------------------------------------------------------------------------------------------------------------------------------
+Show report for the BGP route table of network-instance "*"
+------------------------------------------------------------------------------------------------------------------------------------------------
+Status codes: u=used, *=valid, >=best, x=stale
+Origin codes: i=IGP, e=EGP, ?=incomplete
+------------------------------------------------------------------------------------------------------------------------------------------------
+BGP Router ID: 1.1.1.1      AS: 64501      Local AS: 64501
+------------------------------------------------------------------------------------------------------------------------------------------------
+Type 3 Inclusive Multicast Ethernet Tag Routes
++---------------+--------+---------------+---------------+---------------------+---------------+---------------+---------------+---------------+
+|      VRF      | Status |    Route-     |    Tag-ID     |    Originator-IP    |   neighbor    |   Next-Hop    |  Local-Pref   |    Origin     |
+|               |        | distinguisher |               |                     |               |               |               |               |
++===============+========+===============+===============+=====================+===============+===============+===============+===============+
+| default       | u*>    | 2.2.2.2:100   | 0             | 2.2.2.2             | 2.2.2.2       | 2.2.2.2       | 100           | igp           |
+| default       | *      | 2.2.2.2:100   | 0             | 2.2.2.2             | 2001::2       | 2.2.2.2       | 100           | igp           |
++---------------+--------+---------------+---------------+---------------------+---------------+---------------+---------------+---------------+
+------------------------------------------------------------------------------------------------------------------------------------------------
+2 Inclusive Multicast Ethernet Tag routes 1 used, 2 valid
+------------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+Optionally you may also run:
+- `show bgp evpn route-type imet <origin-ip>`
+- `show bgp evpn route-type imet vrf <vrf-name>`
+- `show bgp evpn route-type imet <origin-ip> vrf <vrf-name>`
+
+## show bgp evpn route-type ip-prefix
+
+The standard SR Linux command to display EVPN Route Type 5 (ip-prefix) is:
+
+```srl
+show network-instance default protocols bgp routes evpn route-type 5 summary
+```
+
+Expected output:
+
+```srl
+------------------------------------------------------------------------------------------------------------------------------------------------
+Show report for the BGP route table of network-instance "default"
+------------------------------------------------------------------------------------------------------------------------------------------------
+Status codes: u=used, *=valid, >=best, x=stale
+Origin codes: i=IGP, e=EGP, ?=incomplete
+------------------------------------------------------------------------------------------------------------------------------------------------
+BGP Router ID: 1.1.1.1      AS: 64501      Local AS: 64501
+------------------------------------------------------------------------------------------------------------------------------------------------
+Type 5 IP Prefix Routes
++--------+------------------+------------+---------------------+------------------+------------------+------------------+------------------+
+| Status |      Route-      |   Tag-ID   |     IP-address      |     neighbor     |     Next-Hop     |      Label       |     Gateway      |
+|        |  distinguisher   |            |                     |                  |                  |                  |                  |
++========+==================+============+=====================+==================+==================+==================+==================+
+| u*>    | 2.2.2.2:200      | 0          | 10.90.1.0/24        | 2.2.2.2          | 2.2.2.2          | 200              | 0.0.0.0          |
+| *      | 2.2.2.2:200      | 0          | 10.90.1.0/24        | 2001::2          | 2.2.2.2          | 200              | 0.0.0.0          |
+| u*>    | 2.2.2.2:200      | 0          | 10:90:1::/64        | 2.2.2.2          | 2.2.2.2          | 200              | ::               |
+| *      | 2.2.2.2:200      | 0          | 10:90:1::/64        | 2001::2          | 2.2.2.2          | 200              | ::               |
++--------+------------------+------------+---------------------+------------------+------------------+------------------+------------------+
+------------------------------------------------------------------------------------------------------------------------------------------------
+4 IP Prefix routes 2 used, 4 valid
+------------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+With the custom CLI plugin, we are removing `Label`, `Gateway` and adding `VRF`, `Local-Pref` and `Origin` columns.
+
+For the command syntax, we will follow the EOS command with the option to add `vrf` name at the end that equates to `network-instance` in SR Linux. An unnamed argument to filter on a specific `ip-address` is also added.
+
+Since specifying `vrf` is optional, by default, the command will search for routes in all VRFs (network instances) and the `VRF` column in the output helps to identify the VRF name of each route.
+
+The custom CLI command help section (type `?` to display help) looks like:
+
+```srl
+A:leaf1# show bgp evpn route-type ip-prefix ?
+usage: ip-prefix [<ip-address>] [vrf <value>]
+
+Positional arguments:
+  ip-address        IPv4 or IPv6 address prefix
+
+Named arguments:
+  vrf               network instance name
+```
+
+Let's take a look the custom CLI plugin output. The command is:
+
+```srl
+show bgp evpn route-type ip-prefix
+```
+
+Expected output:
+
+```srl
+------------------------------------------------------------------------------------------------------------------------------------------------
+Show report for the BGP route table of network-instance "*"
+------------------------------------------------------------------------------------------------------------------------------------------------
+Status codes: u=used, *=valid, >=best, x=stale
+Origin codes: i=IGP, e=EGP, ?=incomplete
+------------------------------------------------------------------------------------------------------------------------------------------------
+BGP Router ID: 1.1.1.1      AS: 64501      Local AS: 64501
+------------------------------------------------------------------------------------------------------------------------------------------------
+Type 5 IP Prefix Routes
++---------------+--------+---------------+---------------+---------------------+---------------+---------------+---------------+---------------+
+|      VRF      | Status |    Route-     |    Tag-ID     |     IP-address      |   neighbor    |   Next-Hop    |  Local-Pref   |    Origin     |
+|               |        | distinguisher |               |                     |               |               |               |               |
++===============+========+===============+===============+=====================+===============+===============+===============+===============+
+| default       | u*>    | 2.2.2.2:200   | 0             | 10.90.1.0/24        | 2.2.2.2       | 2.2.2.2       | 100           | igp           |
+| default       | *      | 2.2.2.2:200   | 0             | 10.90.1.0/24        | 2001::2       | 2.2.2.2       | 100           | igp           |
+| default       | u*>    | 2.2.2.2:200   | 0             | 10:90:1::/64        | 2.2.2.2       | 2.2.2.2       | 100           | igp           |
+| default       | *      | 2.2.2.2:200   | 0             | 10:90:1::/64        | 2001::2       | 2.2.2.2       | 100           | igp           |
++---------------+--------+---------------+---------------+---------------------+---------------+---------------+---------------+---------------+
+------------------------------------------------------------------------------------------------------------------------------------------------
+4 IP Prefix routes 2 used, 4 valid
+------------------------------------------------------------------------------------------------------------------------------------------------
+```
+
+Optionally you may also run:
+- `show bgp evpn route-type ip-prefix <ip-address>`
+- `show bgp evpn route-type ip-prefix vrf <vrf-name>`
+- `show bgp evpn route-type ip-prefix <ip-address> vrf <vrf-name>`
 
 
