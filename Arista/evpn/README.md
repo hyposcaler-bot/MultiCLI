@@ -10,10 +10,10 @@ Use the **Lab** to test the custom CLI plugin. The lab comes with options to con
 |---|---|---|---|
 | `show mac address-table` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
 | `show vxlan address-table` | [Details]() | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
-| `show bgp evpn route-type mac-ip` | [Details](#show-bgp-evpn-route-type-mac-ip) | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
-| `show bgp evpn route-type imet` | [Details](#show-bgp-evpn-route-type-imet) | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
-| `show bgp evpn route-type ip-prefix` | [Details](#show-bgp-evpn-route-type-ip-prefix) | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
-| `show bgp evpn summary` | [Details](#show-bgp-evpn-summary) | [Script]() | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
+| `show bgp evpn route-type mac-ip` | [Details](#show-bgp-evpn-route-type-mac-ip) | [Script](A_show_bgp_evpn.py) | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
+| `show bgp evpn route-type imet` | [Details](#show-bgp-evpn-route-type-imet) | [Script](A_show_bgp_evpn.py) | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
+| `show bgp evpn route-type ip-prefix` | [Details](#show-bgp-evpn-route-type-ip-prefix) | [Script](A_show_bgp_evpn.py) | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
+| `show bgp evpn summary` | [Details](#show-bgp-evpn-summary) | [Script](A_show_bgp_evpn.py) | [Lab](https://github.com/srlinuxamericas/N92-evpn) |
 
 ## show mac address-table
 
