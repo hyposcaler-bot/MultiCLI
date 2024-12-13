@@ -69,20 +69,67 @@ IPv6 prefixes with active ECMP routes: 0
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-We will be using CLI alias for the equivalent EOS command.
+We will be using CLI alias for the equivalent EOS command. To create an alias, run the command:
 
 ```srl
+environment alias "show ip route vrf {name}"  "show network-instance {name} route-table"
+```
+
+To save the alias to the user home directory, run:
+
+``srl
+environment save
 ```
 
 
-Let's take a look the custom CLI plugin output. The command is:
+Now run the alias command:
 
 ```srl
+environment alias "show ip route vrf {name}"  "show network-instance {name} route-table"
+```
 
+The output will be same as the SR Linux output shown above.
+
+It is also possible to filter out some of the fields. As an example:
+
+```srl
+environment alias "show ip route vrf {name}"  "show network-instance {name} route-table | filter fields instance/ip-route/metric instance/ip-route/next-hop-(type) instance/ip-route/next-hop-interface | as table"
 ```
 
 Expected output:
 
 ```srl
-
++---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                             Name                                                                              |
++===============================================================================================================================================================+
+| ip-vrf-1                                                                                                                                                      |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------+
++----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+
+|    Instance    |     Prefix     |       ID       |   Route Type   |  Route Owner   |     Active     |     Metric     |    Next-hop    |    Next-hop    |
+|                |                |                |                |                |                |                |     (Type)     |   Interface    |
++================+================+================+================+================+================+================+================+================+
+| ip-vrf-1       | 10.80.1.0/24   | 3              | local          | net_inst_mgr   | True           | 0              | 10.80.1.2      | ethernet-      |
+|                |                |                |                |                |                |                | (direct)       | 1/11.0         |
+| ip-vrf-1       | 10.80.1.2/32   | 3              | host           | net_inst_mgr   | True           | 0              | None (extract) | None           |
+| ip-vrf-1       | 10.80.1.255/32 | 3              | host           | net_inst_mgr   | True           | 0              | None           |                |
+|                |                |                |                |                |                |                | (broadcast)    |                |
+| ip-vrf-1       | 10.90.1.0/24   | 0              | bgp-evpn       | bgp_evpn_mgr   | True           | 0              | 2.2.2.2/32 (in |                |
+|                |                |                |                |                |                |                | direct/vxlan)  |                |
++----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                             Name                                                                              |
++===============================================================================================================================================================+
+| ip-vrf-1                                                                                                                                                      |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------+
++----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+
+|    Instance    |     Prefix     |       ID       |   Route Type   |  Route Owner   |     Active     |     Metric     |    Next-hop    |    Next-hop    |
+|                |                |                |                |                |                |                |     (Type)     |   Interface    |
++================+================+================+================+================+================+================+================+================+
+| ip-vrf-1       | 10:80:1::/64   | 3              | local          | net_inst_mgr   | True           | 0              | 10:80:1::2     | ethernet-      |
+|                |                |                |                |                |                |                | (direct)       | 1/11.0         |
+| ip-vrf-1       | 10:80:1::2/128 | 3              | host           | net_inst_mgr   | True           | 0              | None (extract) | None           |
+| ip-vrf-1       | 10:90:1::/64   | 0              | bgp-evpn       | bgp_evpn_mgr   | True           | 0              | 2.2.2.2/32 (in |                |
+|                |                |                |                |                |                |                | direct/vxlan)  |                |
++----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+
 ```
+
