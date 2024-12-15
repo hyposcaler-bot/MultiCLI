@@ -14,6 +14,8 @@ These customized CLI scripts are called **Custom CLI plugins** in SR Linux.
 
 Since everything is modeled in yang from the ground up, this allows the user to use CLI to access any object or attribute in the system and display it in the format they are familiar with.
 
+Custom CLI commands also provide the same auto-completion and help features that come with native SR Linux commands.
+
 So how does this benefit the user? There are few use cases that we could think of like:
 - Use the same MOP and command set that you previously used for another provider
 - Use the same automation or monitoring scripts that was written for another provider
