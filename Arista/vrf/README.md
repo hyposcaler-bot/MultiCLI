@@ -85,7 +85,7 @@ environment save
 Now run the alias command:
 
 ```srl
-environment alias "show ip route vrf {name}"  "show network-instance {name} route-table"
+show ip route vrf default
 ```
 
 The output will be same as the SR Linux output shown above.
