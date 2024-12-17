@@ -77,7 +77,7 @@ environment alias "show ip route vrf {name}"  "show network-instance {name} rout
 
 To save the alias to the user home directory, run:
 
-``srl
+```srl
 environment save
 ```
 
