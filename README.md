@@ -1,6 +1,6 @@
-# Polyglot
+# MultiCLI
 
-Welcome to the Polyglot project for Nokia SR Linux.
+Welcome to the MultiCLI project for Nokia SR Linux.
 
 As you know, [SR Linux](https://learn.srlinux.dev/) is the industry's most modern Network Operating System enabling unmatched automation and programmability features.
 
@@ -25,9 +25,9 @@ All these are CLI heavy use cases. You may have more use cases in your mind.
 
 This is awesome! But how do i put this into action?
 
-## What is Polyglot about?
+## What is MultiCLI about?
 
-The mission of Polyglot is to get you started with SR Linux CLI customization feature for your environment.
+The mission of MultiCLI is to get you started with SR Linux CLI customization feature for your environment.
 
 Over the next few months, we will be contributing python scripts that will enable SR Linux custom CLI commands that you are already familiar with from another provider.
 
@@ -52,7 +52,7 @@ To test these scripts:
 - Copy the python script to `/etc/opt/srlinux/cli/plugins` directory on a SR Linux node
 - If you are already logged into the node, logout and login again for the custom command to be loaded.
 
-## Polyglot Scripts
+## MultiCLI Scripts
 
 This repo is structured based on the provider/vendor that we try to match in SR Linux CLI.
 
