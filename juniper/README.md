@@ -1,10 +1,21 @@
-# Juniper JunOS scripts
+# Custom CLI Plugins for Juniper JUNOS
 
-The following scripts are included in this folder:
-- `show_interfaces.py`
+The following CLI plugins are available in this repo:
+
+| Command | Contributor |
+|---|---|
+| `show interfaces` | [hendriksthomas](https://github.com/hendriksthomas) |
+| `show interfaces terse` | [hendriksthomas](https://github.com/hendriksthomas) |
+| `show interfaces brief` | [hendriksthomas](https://github.com/hendriksthomas) |
+| `show route` | [drew](https://github.com/drew) |
+| `show ethernet-switching table` | [michelredondo](https://github.com/michelredondo) |
+
+## Testing
+
+Deploy the EVPN lab. Login to any leaf or spine node using `juser/juser` and try any of the above commands.
 
 > [!NOTE]
-> Some of these scripts require that other python scripts are also copied into the `plugins` folder. See the subchapters below for details.
+> Some of these plugin scripts require other python scripts that are also copied into the `eth_switch` or `route` folder.
 
 ## `show_interfaces.py`
 
