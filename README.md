@@ -33,6 +33,17 @@ As part of this project, we are publishing custom CLI plugins for `show` command
 
 The user community is free to take these scripts, use them as is or modify them based on their end goal. We will also be happy to accept new contributions from the community.
 
+## MultiCLI Plugins
+
+This repo is structured based on the vendor that we try to match in SR Linux CLI.
+
+In this initial release, we have scripts for:
+
+- [Arista EOS](arista/)
+- [Cisco NX-OS](cisco-nx/)
+- [Juniper JUNOS](juniper/)
+- [Nokia SR OS](nokia/)
+
 ## Learn how to customize SR Linux CLI
 
 For those intereted in learning the process of customizing the SR Linux CLI, refer to the official [SR Linux CLI plug-in guide](https://documentation.nokia.com/srlinux/24-10/title/cli_plugin.html).
@@ -41,26 +52,41 @@ For practical experience, start by using the beginner SReXperts hackathon use ca
 
 Also, check out these blogs on SR Linux CLI customization.
 
-## Testing scripts
+## Test Lab
 
-With the power of [Containerlab](https://containerlab.dev/) and the free SR Linux docker image, testing these custom CLI commands is a simple process. This repo contains sample lab toplogies with startup configs where these custom commands can be tested.
+With the power of [Containerlab](https://containerlab.dev/) and the free SR Linux docker image, testing these custom CLI commands is a simple process. This repo contains a [lab](lab/) topology with startup configs where these custom commands can be tested.
 
 To test these scripts:
 - Clone this repo to your host or use codespaces
-- Deploy the SR Linux lab referenced in the lab directory
+- Deploy the EVPN lab or MPLS lab(coming soon)
 - All custom CLI plugin files are bound to the nodes using the `bind` function in the topology file
-- Login to any node and try these commands
+- Each node is configured with 4 custom users - nuser (for Nokia SR OS commands), cnxuser (for NX-OS commands), jsuer (for Junos commands), auser (for EOS commands). Password is same as username
+- Each of the above user's directory is loaded with the custom cli plugin files for that NOS.
+- Login to any node using any of the 4 usernames to try these commands.
 
-## MultiCLI Scripts
+---
+<div align=center>
+<a href="https://codespaces.new/srl-labs/multicli?quickstart=1">
+<img src="https://gitlab.com/rdodin/pics/-/wikis/uploads/d78a6f9f6869b3ac3c286928dd52fa08/run_in_codespaces-v1.svg?sanitize=true" style="width:50%"/></a>
 
-This repo is structured based on the vendor that we try to match in SR Linux CLI.
+**[Run](https://codespaces.new/srl-labs/multicli?quickstart=1) this lab in GitHub Codespaces for free**.  
+[Learn more](https://containerlab.dev/manual/codespaces/) about Containerlab for Codespaces.
 
-In this initial release, we have scripts for:
+</div>
 
-- [Arista EOS](Arista/)
-- [Cisco NX-OS]()
-- [Juniper JUNOS]()
-- [Nokia SR OS]()
+---
+
+To deploy evpn lab:
+
+```srl
+sudo clab dep -t srl-evpn-mh.clab.yml
+```
+
+## This is great, but i want more commands supported for my network
+
+We are inviting contributions from the open source community towards this project.
+
+Or contact your Nokia Account team to engage Nokia Professional Services.
 
 ## Resources for further learning
 
