@@ -8,7 +8,7 @@ The following scripts are included in this folder:
 
 ## `evpn_report.py`
 
-This script introduces a custom command that allows the user to visualize the EVPN endpoints for both single-homed and multi-homed (ethernet segment) destinations. This is useful for figuring out where an EVPN-enabled is configured.
+This script introduces a custom command that allows the user to visualize the EVPN endpoints for both single-homed and multi-homed (ethernet segment) destinations. This is useful for figuring out where an EVPN-enabled service is configured.
 
 The command works for EVPN services with both VxLAN and MPLS transport tunnels. It requires the `service_report.py` script to also be copied to the `plugins` folder.
 
