@@ -7,7 +7,7 @@ The following CLI plugins are available in this repo:
 | `show interfaces` | [hendriksthomas](https://github.com/hendriksthomas) |
 | `show interfaces terse` | [hendriksthomas](https://github.com/hendriksthomas) |
 | `show interfaces brief` | [hendriksthomas](https://github.com/hendriksthomas) |
-| `show route` | [drew](https://github.com/drew) |
+| `show route` | [drewelliott](https://github.com/drewelliott) |
 | `show ethernet-switching table` | [michelredondo](https://github.com/michelredondo) |
 
 ## Testing
