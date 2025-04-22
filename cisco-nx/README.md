@@ -3,6 +3,7 @@
 The following CLI plugins are available in this repo:
 
 | Command | Contributor |
+|---|---|
 | `show ip route` | [aaakpinar](https://github.com/aaakpinar) |
 | `show ip interface brief` | [aaakpinar](https://github.com/aaakpinar) |
 | `show ip bgp summary` | [aaakpinar](https://github.com/aaakpinar) |
