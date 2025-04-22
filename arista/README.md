@@ -15,7 +15,6 @@ The following CLI plugins are available in this repo:
 | `show bgp evpn route-type mac-ip` | [sajusal](https://github.com/sajusal) |
 | `show bgp evpn route-type imet` | [sajusal](https://github.com/sajusal) |
 | `show bgp evpn route-type ethernet-segment` | [sajusal](https://github.com/sajusal) |
-| `show bgp evpn route-type ethernet-segment` | [sajusal](https://github.com/sajusal) |
 | `show bgp evpn route-type ip-prefix` | [sajusal](https://github.com/sajusal) |
 | `show bgp evpn summary` | [sajusal](https://github.com/sajusal) |
 
