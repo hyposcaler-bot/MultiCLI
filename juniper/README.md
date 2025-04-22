@@ -25,8 +25,6 @@ Where `<name>` is either omitted or identifies a (sub-)interface on the system.
 <details>
     <summary>Example execution (terse)</summary>
 
-    ```
-
     --{ running }--[  ]--
     A:admin@srl# show interfaces ethernet-1/3 terse
     Interface               Admin Link Proto    Local                 Remote
@@ -40,14 +38,11 @@ Where `<name>` is either omitted or identifies a (sub-)interface on the system.
     ----------------------------------------------------------------------------------------------------
     Try SR Linux command: show interface
 
-    ```
-
 </details>
 
 <details>
     <summary>Example execution (brief)</summary>
 
-    ```
     --{ running }--[  ]--
     A:admin@srl# show interfaces brief ethernet-1/3
     Physical interface: ethernet-1/3, Enabled, Physical link is Up
@@ -68,14 +63,12 @@ Where `<name>` is either omitted or identifies a (sub-)interface on the system.
 
     ----------------------------------------------------------------------------------------------------
     Try SR Linux command: show interface detail
-    ```
 
 </details>
 
 <details>
     <summary>Example execution (regular)</summary>
 
-    ```
     --{ running }--[  ]--
     A:admin@srl# show interfaces ethernet-1/3
     Physical interface: ethernet-1/3, Enabled, Physical link is Up
@@ -127,6 +120,5 @@ Where `<name>` is either omitted or identifies a (sub-)interface on the system.
 
     ----------------------------------------------------------------------------------------------------
     Try SR Linux command: show interface detail
-    ```
 
 </details>
