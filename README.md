@@ -53,6 +53,7 @@ For practical experience, start by using the beginner SReXperts hackathon use ca
 Also, check out these blogs on SR Linux CLI customization:
 
 [Learn SRLinux](https://learn.srlinux.dev/cli/plugins/getting-started/)
+
 [Blog by Alperen](https://networkcloudandeverything.com/programming-a-custom-show-command-with-sr-linux-cli-plugin/)
 
 ## Test Lab
