@@ -3,7 +3,7 @@
 The following CLI plugins are available in this repo:
 
 > [!NOTE]
-> At the time releasing these scripts, SR Linux did not support a custom CLI path that was loaded on top of an existing native path. Due to this reason, some EOS commands start with the syntax `show eos`. This will be fixed in a future release.
+> At the time of releasing these scripts, SR Linux did not support a custom CLI path that was loaded on top of an existing native path. Due to this reason, some EOS commands start with the syntax `show eos`. This will be fixed in a future release.
 
 | Command | Contributor |
 |---|---|
