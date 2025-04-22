@@ -50,7 +50,10 @@ For those intereted in learning the process of customizing the SR Linux CLI, ref
 
 For practical experience, start by using the beginner SReXperts hackathon use case [here](https://github.com/nokia/SReXperts/tree/main/hackathon/activities/srlinux-i-cli-plugin-show-version) following by an intermediate use case [here](https://github.com/nokia/SReXperts/tree/main/hackathon/activities/srlinux-i-custom-cli).
 
-Also, check out these blogs on SR Linux CLI customization.
+Also, check out these blogs on SR Linux CLI customization:
+
+[Learn SRLinux](https://learn.srlinux.dev/cli/plugins/getting-started/)
+[Blog by Alperen](https://networkcloudandeverything.com/programming-a-custom-show-command-with-sr-linux-cli-plugin/)
 
 ## Test Lab
 
@@ -63,6 +66,8 @@ To test these scripts:
 - Each node is configured with 4 custom users - nuser (for Nokia SR OS commands), cnxuser (for NX-OS commands), juser (for Junos commands), auser (for EOS commands). Password is same as username
 - Each of the above user's directory is loaded with the custom cli plugin files for that NOS.
 - Login to any node using any of the 4 usernames to try these commands.
+
+For example, to try NX-OS plugins, login to any leaf or spine nodes using `cnxuser/cnxuser` and try the supported NX-OS commands.
 
 ---
 <div align=center>
