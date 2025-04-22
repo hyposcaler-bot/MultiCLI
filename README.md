@@ -64,7 +64,7 @@ To test these scripts:
 - Clone this repo to your host or use codespaces
 - Deploy the EVPN lab or MPLS lab (coming soon)
 - All custom CLI plugin files are bound to the nodes using the `bind` function in the topology file
-- Each node is configured with 4 custom users - nuser (for Nokia SR OS commands), cnxuser (for NX-OS commands), juser (for Junos commands), auser (for EOS commands). Password is same as username
+- Each node is configured with 4 custom users - nokuser (for Nokia SR OS commands), cnxuser (for NX-OS commands), juser (for Junos commands), auser (for EOS commands). Password is same as username
 - Each of the above user's directory is loaded with the custom cli plugin files for that NOS.
 - Login to any node using any of the 4 usernames to try these commands.
 
