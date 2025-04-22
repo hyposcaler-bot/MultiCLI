@@ -21,3 +21,63 @@ The following CLI plugins are available in this repo:
 ## Testing
 
 Deploy the EVPN lab. Login to any leaf or spine node using `auser/auser` and try any of the above commands.
+# SR Linux Custom CLI Plugins for EOS Commands
+
+This folder contains custom CLI python scripts for EOS commands.
+
+The scripts are arranged in this format. The main_arista.py checks the imports in the shown path below
+
+```
+/etc/opt/srlinux/cli
+├── bgp
+│   └── bgp_evpn_report.py            # Handles BGP EVPN summary reports
+│
+├── interface
+│   ├── arista_arp_details.py         # Parses and formats ARP entries
+│   ├── arista_interface_detail.py    # Displays detailed interface info (Arista style)
+│   ├── arista_interface_status.py    # Displays brief interface status (Arista style)
+│   
+│
+├── ip
+│   └── ip_bgp_report.py              # Generates standard BGP summary reports
+│
+└── plugins
+    ├── main_arista.py                # Loads Arista-style CLI plugins
+
+```
+
+### Getting started
+
+**Step-1**: Load the script in the same format shown above.
+
+**Step-2**: Reload the session.
+
+**Step-3**: Once login, make sure the plugins are loaded `show ?` would list `eos` in the list
+
+### Verification commands:
+
+**Interface Status**:
+```
+show eos interface status
+```
+
+**Interface Details**:
+```
+show eos interface {interface_name}
+```
+*OR, to list all interfaces*
+
+```
+show eos interface
+```
+
+**ARP Details**:
+```
+show eos arp
+```
+OR, to provide optional arguments,
+
+```
+show eos arp interface {interface_name}
+```
+

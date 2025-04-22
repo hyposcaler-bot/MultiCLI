@@ -1,9 +1,10 @@
 #!/usr/bin/python
 ###########################################################################
-# Description:
+# Description: CLI plugin for EOS bgp command
 #
-# Copyright (c) 2020 Nokia
+# Copyright (c) 2025 Nokia
 ###########################################################################
+
 from srlinux.mgmt.cli import CliPlugin, KeyCompleter
 from srlinux.syntax import Syntax
 from srlinux.location import build_path
@@ -26,16 +27,28 @@ for path in potential_paths:
 if import_base is None:
     raise ImportError("Could not find a valid CLI plugin base directory")
 
-# Construct the import path
-import_path = os.path.join(import_base, "bgp")
+####################################################################
+##### Construct the import path. ###################################
+'''
+Add your directory and creation a similar similar like below
+'''
+####################################################################
+import_path_ip = os.path.join(import_base, "ip")
+if import_path_ip not in sys.path:
+    sys.path.insert(0, import_path_ip)
+from ip_bgp_report import IpBgpReport as BaseBgpReport
 
-# Add to Python path if not already present
+import_path_bgp = os.path.join(import_base, "bgp")
+if import_path_bgp not in sys.path:
+    sys.path.insert(0, import_path_bgp)
+from bgp_evpn_report import IpBgpReport as EvpnBgpReport
+
+import_path = os.path.join(import_base, "interface")
 if import_path not in sys.path:
     sys.path.insert(0, import_path)
-
-from ip_bgp_report import IpBgpReport
-
-
+from arista_interface_detail import InterfaceDetails
+from arista_interface_status import InterfaceStatus
+from arista_arp_details import ArpDetails
 
 class Plugin(CliPlugin):
 
@@ -64,6 +77,18 @@ class Plugin(CliPlugin):
     )
 
     def load(self, cli, **_kwargs):
+        syntax = Syntax('ip', help='display ip protocol information')
+        ip = cli.show_mode.add_command(syntax, update_location=True)
+        bgp = ip.add_command(
+            Syntax('bgp', help='show bgp information'),
+            update_location=True)
+        bgp_summary = bgp.add_command(
+            Syntax('summary')
+            .add_named_argument('vrf', default='default', help = 'network instance name', suggestions=KeyCompleter('/network-instance[name=*]')),
+            callback = self._print_summary)
+
+        ##### adding evpn: saju ######
+
         syntax = Syntax('bgp', help='display bgp information')
         bgp = cli.show_mode.add_command(syntax, update_location=True)
         evpn = bgp.add_command(
@@ -72,7 +97,7 @@ class Plugin(CliPlugin):
         evpn_summary = evpn.add_command(
             Syntax('summary')
             .add_named_argument('vrf', default='default', help = 'network instance name', suggestions=KeyCompleter('/network-instance[name=*]')),
-            callback = self._print_summary)
+            callback = self._print_evpn_summary)
         route_type = evpn.add_command(Syntax('route-type', help='specify the EVPN route type'))
         rt_eth_ad = route_type.add_command(
             Syntax('auto-discovery')
@@ -103,8 +128,57 @@ class Plugin(CliPlugin):
             .add_named_argument('vrf', default='default', help = 'network instance name', suggestions=KeyCompleter('/network-instance[name=*]'))
             .add_named_argument('ip-address', default='*', help = 'IPv4 or IPv6 address prefix'),
             callback = self._print_5)
-            #schema=self.get_data_schema_all())                
-          
+        
+        #### interface and arp : mozaman ####
+
+        '''
+        This section has preprent command called eos because there is an overlap command with arista and srlinux
+        Going forward in new release eos preprend will be depreciated and run the native commands
+        example: show eos interface status
+        '''
+
+        syntax = Syntax('eos', help='Show Arista EOS reports')
+        eos = cli.show_mode.add_command(syntax)
+        # Adding sub-commands of Arista command:  "show arista interface detail"
+        interfaces = eos.add_command(
+            InterfaceDetails().get_syntax_details(),
+            update_location=True,
+            callback= self._interface_details
+        )
+        # Adding sub-commands of Arista command:  "show Arista EOS interface status"
+        interfaces.add_command(
+            InterfaceStatus().get_syntax_status(),
+            update_location=True,
+            callback=self._interface_status,
+            schema = InterfaceStatus().get_data_schema()
+        )
+        # ARP Commands of Arista EOS command: "show arp"
+        eos.add_command(
+            ArpDetails()._get_syntax_arp(),
+            update_location=True,
+            callback=self._arp_entries,
+            # callback=ArpDetails()._print,
+            schema=ArpDetails()._get_arp_schema(True),
+        )
+
+############# Base BGP IP : saju ###########
+
+    def _print_summary(self, state, arguments, output, **_kwargs):
+        self._arguments = arguments
+        netinst = self._arguments.get('summary', 'vrf')
+        BaseBgpReport().show_bgp_summary(state, output, network_instance=netinst)
+        print("-" * 100)
+        print(f'Try SR Linux command: show network-instance {netinst} protocols bgp neighbor')
+
+############### EVPN BGP : saju ############
+
+    def _print_evpn_summary(self, state, arguments, output, **_kwargs):
+        self._arguments = arguments
+        netinst = self._arguments.get('summary', 'vrf')
+        EvpnBgpReport().show_bgp_summary(state, output, network_instance=netinst)
+        print("-" * 100)
+        print(f'Try SR Linux command: show network-instance {netinst} protocols bgp neighbor')
+
 
     def __init__(self):
         self._rd = '*'
@@ -124,13 +198,6 @@ class Plugin(CliPlugin):
         self._used_routes = 0
         self._valid_routes = 0
         self._received_count = 0
-
-    def _print_summary(self, state, arguments, output, **_kwargs):
-        self._arguments = arguments
-        netinst = self._arguments.get('summary', 'vrf')
-        IpBgpReport().show_bgp_summary(state, output, network_instance=netinst)
-        print("-" * 100)
-        print(f'Try SR Linux command: show network-instance {netinst} protocols bgp neighbor')
 
     def _print_1(self, state, arguments, output, **_kwargs):
         self._route_type = '1'
@@ -186,3 +253,26 @@ class Plugin(CliPlugin):
         #self._print(state, arguments, output, **_kwargs)
         print("-" * 100)
         print('Try SR Linux command: show network-instance default protocols bgp routes evpn route-type 5 summary')
+
+########## Interface and ARP: mozaman ###########
+
+    def _interface_details(self, state, arguments, output, **_kwargs):
+        if state.is_intermediate_command:
+            return
+        InterfaceDetails().print(state, arguments, output, **_kwargs)
+        msg = 'Try SR Linux command: show interface {interface_name} detail'
+        output.print_line(f'\n{"-" * len(msg)}\n{msg}')
+        
+    def _interface_status(self, state, arguments, output, **_kwargs):
+        if state.is_intermediate_command:
+            return
+        InterfaceStatus().print(state, arguments, output)
+        msg = 'Try SR Linux command: show interface {interface_name} brief'
+        output.print_line(f'\n{"-" * len(msg)}\n{msg}')
+
+    def _arp_entries(self, state, arguments, output, **_kwargs):
+        if state.is_intermediate_command:
+            return
+        ArpDetails().print(state, arguments, output)
+        msg = 'Try SR Linux command: show arpnd arp-entries'
+        output.print_line(f'\n{"-" * len(msg)}\n{msg}')
