@@ -110,6 +110,8 @@ Deploy the lab:
 sudo clab dep -t srl-evpn-mh.clab.yml
 ```
 
+All non-MPLS commands are tested on Nokia 7220 IXR-D2L on SR Linux release 25.3.1.
+
 ## This is great, but i want more commands supported for my network
 
 We are inviting contributions from the open source community towards this project.
