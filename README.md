@@ -8,7 +8,7 @@ One of its capabilities is the ability to customize the CLI on SR Linux.
 
 All SR Linux CLI show commands shipped with the software are written in executable python scripts leveraging the state yang models.
 
-Users are allowed take those python scripts, modify them to fit their use case or build a brand new CLI command leveraging the same state models.
+Users are allowed to take those python scripts, modify them to fit their use case or build a brand new CLI command leveraging the same state models.
 
 These customized CLI scripts are called **Custom CLI plugins** in SR Linux.
 
