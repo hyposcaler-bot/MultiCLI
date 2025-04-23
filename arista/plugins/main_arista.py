@@ -30,7 +30,7 @@ if import_base is None:
 ####################################################################
 ##### Construct the import path. ###################################
 '''
-Add your directory and creation a similar similar like below
+Add your directory and create a similar structure like below
 '''
 ####################################################################
 import_path_ip = os.path.join(import_base, "ip")
@@ -104,25 +104,21 @@ class Plugin(CliPlugin):
             .add_named_argument('vrf', default='default', help = 'network instance name', suggestions=KeyCompleter('/network-instance[name=*]'))
             .add_named_argument('esi', default='*', help = 'ESI value'),
             callback = self._print_1)
-            #schema=self.get_data_schema_all())
         rt_mac_ip = route_type.add_command(
             Syntax('mac-ip')
             .add_named_argument('vrf', default='default', help = 'network instance name', suggestions=KeyCompleter('/network-instance[name=*]'))
             .add_named_argument('mac-address', default='*', help = 'MAC address'),
             callback = self._print_2)
-            #schema=self.get_data_schema_all())
         rt_imet = route_type.add_command(
             Syntax('imet')
             .add_named_argument('vrf', default='default', help = 'network instance name', suggestions=KeyCompleter('/network-instance[name=*]'))
             .add_named_argument('origin-router', default='*', help = 'Originating router IPv4 or IPv6 address'),
             callback = self._print_3)
-            #schema=self.get_data_schema_all())
         rt_eth_seg = route_type.add_command(
             Syntax('ethernet-segment')
             .add_named_argument('vrf', default='default', help = 'network instance name', suggestions=KeyCompleter('/network-instance[name=*]'))
             .add_named_argument('esi', default='*', help = 'ESI value'),
             callback = self._print_4)
-            #schema=self.get_data_schema_all())
         rt_ip_prefix = route_type.add_command(
             Syntax('ip-prefix')
             .add_named_argument('vrf', default='default', help = 'network instance name', suggestions=KeyCompleter('/network-instance[name=*]'))
@@ -132,7 +128,7 @@ class Plugin(CliPlugin):
         #### interface and arp : mozaman ####
 
         '''
-        This section has preprent command called eos because there is an overlap command with arista and srlinux
+        This section has preprend command called eos because there is an overlap command with arista and srlinux
         Going forward in new release eos preprend will be depreciated and run the native commands
         example: show eos interface status
         '''
@@ -204,9 +200,7 @@ class Plugin(CliPlugin):
         self._arguments = arguments
         netinst = self._arguments.get('auto-discovery', 'vrf')
         esi_input = self._arguments.get('auto-discovery', 'esi')
-        IpBgpReport().show_evpn_rt1(state, output, network_instance=netinst, esi_value=esi_input)
-        #self._bgp_rib = self._getRibRoute1(state)
-        #self._print(state, arguments, output, **_kwargs)
+        EvpnBgpReport().show_evpn_rt1(state, output, network_instance=netinst, esi_value=esi_input)
         print("-" * 100)
         print('Try SR Linux command: show network-instance default protocols bgp routes evpn route-type 1 summary')
 
@@ -215,9 +209,7 @@ class Plugin(CliPlugin):
         self._arguments = arguments
         netinst = self._arguments.get('mac-ip', 'vrf')
         mac_input = self._arguments.get('mac-ip', 'mac-address')
-        IpBgpReport().show_evpn_rt2(state, output, network_instance=netinst, mac_value=mac_input)
-        #self._bgp_rib = self._getRibRoute2(state)
-        #self._print(state, arguments, output, **_kwargs)
+        EvpnBgpReport().show_evpn_rt2(state, output, network_instance=netinst, mac_value=mac_input)
         print("-" * 100)
         print('Try SR Linux command: show network-instance default protocols bgp routes evpn route-type 2 summary')
 
@@ -226,9 +218,7 @@ class Plugin(CliPlugin):
         self._arguments = arguments
         netinst = self._arguments.get('imet', 'vrf')
         originr_input = self._arguments.get('imet', 'origin-router')
-        IpBgpReport().show_evpn_rt3(state, output, network_instance=netinst, originr_value=originr_input)
-        #self._bgp_rib = self._getRibRoute3(state)
-        #self._print(state, arguments, output, **_kwargs)
+        EvpnBgpReport().show_evpn_rt3(state, output, network_instance=netinst, originr_value=originr_input)
         print("-" * 100)
         print('Try SR Linux command: show network-instance default protocols bgp routes evpn route-type 3 summary')
 
@@ -237,9 +227,7 @@ class Plugin(CliPlugin):
         self._arguments = arguments
         netinst = self._arguments.get('ethernet-segment', 'vrf')
         esi4_input = self._arguments.get('ethernet-segment', 'esi')
-        IpBgpReport().show_evpn_rt4(state, output, network_instance=netinst, esi4_value=esi4_input)
-        #self._bgp_rib = self._getRibRoute4(state)
-        #self._print(state, arguments, output, **_kwargs)
+        EvpnBgpReport().show_evpn_rt4(state, output, network_instance=netinst, esi4_value=esi4_input)
         print("-" * 100)
         print('Try SR Linux command: show network-instance default protocols bgp routes evpn route-type 4 summary')
 
@@ -248,9 +236,7 @@ class Plugin(CliPlugin):
         self._arguments = arguments
         netinst = self._arguments.get('ip-prefix', 'vrf')
         ip_input = self._arguments.get('ip-prefix', 'ip-address')
-        IpBgpReport().show_evpn_rt5(state, output, network_instance=netinst, ip_value=ip_input)
-        #self._bgp_rib = self._getRibRoute5(state)
-        #self._print(state, arguments, output, **_kwargs)
+        EvpnBgpReport().show_evpn_rt5(state, output, network_instance=netinst, ip_value=ip_input)
         print("-" * 100)
         print('Try SR Linux command: show network-instance default protocols bgp routes evpn route-type 5 summary')
 
