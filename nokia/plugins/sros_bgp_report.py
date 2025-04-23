@@ -21,13 +21,12 @@ for path in potential_paths:
         break
 if import_base is None:
     raise ImportError("Could not find a valid CLI plugin base directory")
-# Construct the import path, add your directory here if not "filters"
-import_path = os.path.join(import_base, "plugins")
+import_path = os.path.join(import_base, "bgp")
 # Add to Python path if not already present
 if import_path not in sys.path:
     sys.path.insert(0, import_path)
 # Import your subcodes
-from filters.sros_bgpsummary import BgpSummaryFilter
+from sros_bgpsummary import BgpSummaryFilter
 ################################################################################
 
 class Plugin(CliPlugin):
