@@ -1,0 +1,124 @@
+name: srl-mh-evpn
+
+mgmt:
+  network: srl-mh-evpn-mgmt
+  ipv4-subnet: 172.20.10.0/24
+  ipv6-subnet: 2001:172:20:10::/64
+
+prefix: ""
+topology:
+  defaults:
+    kind: nokia_srlinux
+  kinds:
+    nokia_srlinux:
+      type: ixrd2l
+      image: ghcr.io/nokia/srlinux:25.3.1
+      binds:
+        - arista:/home/auser/cli
+        - juniper:/home/juser/cli
+        - cisco-nx:/home/cnxuser/cli
+        - nokia:/home/nokuser/cli
+    linux:
+      image: ghcr.io/srl-labs/network-multitool
+  nodes:
+    leaf1-1:
+      startup-config: lab/evpn/leaf1-1-startup.cfg
+      mgmt-ipv4: 172.20.10.2
+      mgmt-ipv6: 2001:172:20:10::2
+    leaf1-2:
+      startup-config: lab/evpn/leaf1-2-startup.cfg
+      mgmt-ipv4: 172.20.10.3
+      mgmt-ipv6: 2001:172:20:10::3
+    leaf2-1:
+      startup-config: lab/evpn/leaf2-1-startup.cfg
+      mgmt-ipv4: 172.20.10.4
+      mgmt-ipv6: 2001:172:20:10::4
+    leaf2-2:
+      startup-config: lab/evpn/leaf2-2-startup.cfg
+      mgmt-ipv4: 172.20.10.5
+      mgmt-ipv6: 2001:172:20:10::5
+    spine:
+      startup-config: lab/evpn/spine-startup.cfg
+      mgmt-ipv4: 172.20.10.6
+      mgmt-ipv6: 2001:172:20:10::6
+    client1:
+      kind: linux
+      mgmt-ipv4: 172.20.10.10
+      mgmt-ipv6: 2001:172:20:10::10
+      exec:
+        - ip link add bond0 type bond mode balance-rr
+        - ip link set eth1 down
+        - ip link set eth1 master bond0
+        - ip link set eth2 down
+        - ip link set eth2 master bond0
+        - ip link set bond0 up
+        - ip address add 172.16.10.50/24 dev bond0
+        - ip -6 address add 172:16:10::50/64 dev bond0
+        - ip route add 10.90.1.0/24 via 172.16.10.254
+        - ip route add 10.80.1.0/24 via 172.16.10.254
+        - ip -6 route add 10:90:1::/64 via 172:16:10::254
+        - ip -6 route add 10:80:1::/64 via 172:16:10::254
+    client2:
+      kind: linux
+      mgmt-ipv4: 172.20.10.11
+      mgmt-ipv6: 2001:172:20:10::11
+      exec:
+        - ip link add bond0 type bond mode balance-rr
+        - ip link set eth1 down
+        - ip link set eth1 master bond0
+        - ip link set eth2 down
+        - ip link set eth2 master bond0
+        - ip link set bond0 up
+        - ip address add 10.80.1.1/24 dev bond0
+        - ip -6 address add 10:80:1::1/64 dev bond0
+        - ip route add 10.90.1.0/24 via 10.80.1.2
+        - ip route add 172.16.10.0/24 via 10.80.1.2
+        - ip -6 route add 10:90:1::/64 via 10:80:1::2
+    client3:
+      kind: linux
+      mgmt-ipv4: 172.20.10.12
+      mgmt-ipv6: 2001:172:20:10::12
+      exec:
+        - ip link add bond0 type bond mode balance-rr
+        - ip link set eth1 down
+        - ip link set eth1 master bond0
+        - ip link set eth2 down
+        - ip link set eth2 master bond0
+        - ip link set bond0 up
+        - ip address add 172.16.10.60/24 dev bond0
+        - ip -6 address add 172:16:10::60/64 dev bond0
+        - ip route add 10.90.1.0/24 via 172.16.10.253
+        - ip route add 10.80.1.0/24 via 172.16.10.253
+        - ip -6 route add 10:90:1::/64 via 172:16:10::253
+        - ip -6 route add 10:80:1::/64 via 172:16:10::253
+    client4:
+      kind: linux
+      mgmt-ipv4: 172.20.10.13
+      mgmt-ipv6: 2001:172:20:10::13
+      exec:
+        - ip link add bond0 type bond mode balance-rr
+        - ip link set eth1 down
+        - ip link set eth1 master bond0
+        - ip link set eth2 down
+        - ip link set eth2 master bond0
+        - ip link set bond0 up
+        - ip address add 10.90.1.1/24 dev bond0
+        - ip -6 address add 10:90:1::1/64 dev bond0
+        - ip route add 10.80.1.0/24 via 10.90.1.2
+        - ip route add 172.16.10.0/24 via 10.90.1.2
+        - ip -6 route add 10:80:1::/64 via 10:90:1::2
+  links:
+    # spine-leaf links
+    - endpoints: [ "leaf1-1:e1-1", "spine:e1-1" ]
+    - endpoints: [ "leaf1-2:e1-2", "spine:e1-2" ]
+    - endpoints: [ "leaf2-1:e1-3", "spine:e1-3" ]
+    - endpoints: [ "leaf2-2:e1-4", "spine:e1-4" ]
+      # leaf-client links
+    - endpoints: [ "client1:eth1", "leaf1-1:e1-10" ]
+    - endpoints: [ "client1:eth2", "leaf1-2:e1-11" ]
+    - endpoints: [ "client2:eth2", "leaf1-1:e1-11" ]
+    - endpoints: [ "client2:eth1", "leaf1-2:e1-10" ]
+    - endpoints: [ "client3:eth1", "leaf2-1:e1-10" ]
+    - endpoints: [ "client3:eth2", "leaf2-2:e1-11" ]
+    - endpoints: [ "client4:eth2", "leaf2-1:e1-11" ]
+    - endpoints: [ "client4:eth1", "leaf2-2:e1-10" ]
