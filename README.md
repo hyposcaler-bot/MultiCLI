@@ -64,9 +64,17 @@ To test these scripts:
 - Clone this repo to your host or use codespaces
 - Deploy the EVPN lab or MPLS lab (coming soon)
 - All custom CLI plugin files are bound to the nodes using the `bind` function in the topology file
-- Each node is configured with 4 custom users - nokuser (for Nokia SR OS commands), cnxuser (for NX-OS commands), juser (for Junos commands), auser (for EOS commands). Password is same as username
+- Each node is configured with 4 custom users:
+
+| User | Password | NOS |
+|------|----------|-----|
+| auser | auser | Arista EOS commands |
+| cnxuser | cnxuser | Cisco NX-OS commands |
+| juser | juser | Juniper JUNOS commands |
+| nokuser | nokuser | Nokia SR OS commands |
+
 - Each of the above user's directory is loaded with the custom cli plugin files for that NOS.
-- Login to any node using any of the 4 usernames to try these commands.
+- Login to any leaf or spine node using any of the 4 usernames to try these commands.
 
 For example, to try NX-OS plugins, login to any leaf or spine nodes using `cnxuser/cnxuser` and try the supported NX-OS commands.
 
@@ -84,7 +92,21 @@ For example, to try NX-OS plugins, login to any leaf or spine nodes using `cnxus
 
 To deploy evpn lab:
 
-```srl
+Clone this repo:
+
+```bash
+git clone https://github.com/srl-labs/multicli.git
+```
+
+Change to the repo directory:
+
+```bash
+cd multicli
+```
+
+Deploy the lab:
+
+```bash
 sudo clab dep -t srl-evpn-mh.clab.yml
 ```
 
