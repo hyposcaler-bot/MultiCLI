@@ -1,12 +1,20 @@
-# Nokia SROS scripts
+# Custom CLI Plugins for Nokia SR OS
 
-The following scripts are included in this folder:
-- `evpn_report.py`
+The following CLI plugins are available in this repo:
 
-> [!NOTE]
-> Some of these scripts require that other python scripts are also copied into the `plugins` folder. See the subchapters below for details.
+| Command | Contributor |
+|---|---|
+| `show router bgp summary` | [giancarlo3g](https://github.com/giancarlo3g) |
+| `show service id <id> evpn-mpls` | [zenodhaene](https://github.com/zenodhaene) |
+| `show service id <id> vxlan` | [zenodhaene](https://github.com/zenodhaene) |
 
-## `evpn_report.py`
+## Testing
+
+Deploy the EVPN lab. Login to any leaf or spine node using `nokuser/nokuser` and try any of the above commands.
+
+## Nokia SROS scripts
+
+### `evpn_report.py`
 
 This script introduces a custom command that allows the user to visualize the EVPN endpoints for both single-homed and multi-homed (ethernet segment) destinations. This is useful for figuring out where an EVPN-enabled service is configured.
 
