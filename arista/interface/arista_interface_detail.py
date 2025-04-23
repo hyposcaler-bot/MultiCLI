@@ -58,22 +58,43 @@ class InterfaceDetails(object):
         return f'{str_time}'
     
     def convert_mac(self, mac):
+        try:
+            if not mac or not isinstance(mac, str):
+                raise ValueError("Invalid MAC address provided")
+
+            print(mac)
             mac = mac.replace(":", "").replace("-", "").lower()
+
             if len(mac) != 12:
                 return mac
+
             return f"{mac[0:4]}.{mac[4:8]}.{mac[8:12]}"
+
+        except Exception as e:
+            return None
     
     def convert_speed_to_bps(self, speed):
-                number = float(speed.rstrip('GMK'))  # Remove G/M/K suffixes
-                unit = speed[-1]
-                if unit == 'G':
-                    return int(number * 1_000_000_000)
-                elif unit == 'M':
-                    return int(number * 1_000_000)
-                elif unit == 'K':
-                    return int(number * 1_000)
-                else:
-                    return int(number)
+        try:
+            if not speed or not isinstance(speed, str):
+                raise ValueError("Invalid speed value provided")
+
+            number = float(speed.rstrip('GMK'))  # Remove G/M/K suffixes
+            unit = speed[-1]
+
+            if unit == 'G':
+                return int(number * 1_000_000_000)
+            elif unit == 'M':
+                return int(number * 1_000_000)
+            elif unit == 'K':
+                return int(number * 1_000)
+            else:
+                return int(number)
+
+        except Exception as e:
+            print(f"Error converting speed '{speed}' to bps: {e}")
+            return None
+
+
                 
                 
     def calculate_utilization(self, traffic_rate, port_speed):
@@ -119,7 +140,17 @@ class InterfaceDetails(object):
             mac_address = self.convert_mac(raw_mac_address)
             bia_address = mac_address
             mtu = intf.mtu
-            bandwidth = int(intf.ethernet.get().port_speed.rstrip("G"))*1000000
+            #bandwidth calculation with exception handling
+            try:
+                port_speed = intf.ethernet.get().port_speed
+                if not port_speed or not isinstance(port_speed, str):
+                    raise ValueError("Invalid or missing port speed")
+
+                bandwidth = int(port_speed.rstrip("G")) * 1_000_000
+
+            except Exception as e:
+                print(f"Error calculating bandwidth from port speed: {e}")
+                bandwidth = None
             try:
                 duplex = intf.ethernet.get().duplex_mode
             except:

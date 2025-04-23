@@ -150,9 +150,9 @@ class ArpDetails(object):
                                             widths=[15, 10, 15, 20],
                                             horizontal_alignment={
                                                 'address': Alignment.Left,
-                                                'age_sec': Alignment.Right,
-                                                'hardware_addr': Alignment.Left,
-                                                'interface': Alignment.Right,
+                                                'age_sec': Alignment.Center,
+                                                'hardware_addr': Alignment.Center,
+                                                'interface': Alignment.Center,
                 },
                                             )
                             )
