@@ -23,7 +23,7 @@ if import_base is None:
     raise ImportError("Could not find a valid CLI plugin base directory")
 
 # Construct the import path
-import_path = os.path.join(import_base, "plugins")
+import_path = os.path.join(import_base, "evpn")
 
 # Add to Python path if not already present
 if import_path not in sys.path:
