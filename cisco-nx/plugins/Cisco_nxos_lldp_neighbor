@@ -40,13 +40,19 @@ class Plugin(CliPlugin):
         lldp_data = self._get_lldp_data(state)
         if not lldp_data:
             sys.stdout.write("No LLDP neighbors found.\n")
+            output.print_line("\n--------------------------------------")
+            output.print_line("Try SR Linux command: show system lldp neighbor")
             return
 
         result = Data(arguments.schema)
         self._set_formatters(result)
-        self._populate_data(result, lldp_data, state)
+        total = self._populate_data(result, lldp_data, state)
+        output.print_line("Capability codes: (R) Router, (B) Bridge, (W) WLAN AP, (S) Switch, (O) Other")
+        output.print_line("")
         with output.stream_data(result):
             pass
+        output.print_line("\n--------------------------------------")
+        output.print_line("Try SR Linux command: show system lldp neighbor")
 
     def _get_lldp_data(self, state):
         """Fetch LLDP neighbor data from the system."""
@@ -61,34 +67,68 @@ class Plugin(CliPlugin):
 
     def _get_hold_time(self, state):
         """Calculate the hold time, using defaults if configuration attributes are missing."""
-        # Default values
         default_hello_timer = 3
         default_hold_multiplier = 40
         default_hold_time = default_hello_timer * default_hold_multiplier  # 120
 
-        # Fetch LLDP configuration from /system/lldp
         config_path = build_path('/system/lldp')
         try:
             config = state.server_data_store.get_data(config_path, recursive=True)
-            # Check if hello_timer and hold_multiplier exist
             if hasattr(config, 'hello_timer') and hasattr(config, 'hold_multiplier'):
                 hello_timer = config.hello_timer
                 hold_multiplier = config.hold_multiplier
                 hold_time = hello_timer * hold_multiplier
                 return str(hold_time)
             else:
-                # use default hold time if attributes are missing
                 return str(default_hold_time)
         except Exception:
-            # use default hold time if fetching config fails
             return str(default_hold_time)
+
+    def _get_capability(self, neighbor):
+        """Determine the capability code based on neighbor's capability child node."""
+        if not hasattr(neighbor, 'capability') or not neighbor.capability:
+            logger.debug("No capability data found, defaulting to Switch")
+            return 'S'  # Default to Switch
+
+        capability = neighbor.capability
+        # Log the capability object's attributes and content for debugging
+        logger.debug(f"Capability attributes: {dir(capability)}")
+        logger.debug(f"Capability content: {capability.__dict__ if hasattr(capability, '__dict__') else str(capability)}")
+
+        # Check for a 'type' field
+        cap_type = getattr(capability, 'type', None)
+        if cap_type:
+            if cap_type == 'router':
+                return 'R'
+            elif cap_type == 'bridge' or cap_type == 'mac-bridge':
+                return 'B'
+            elif cap_type == 'wlan-access-point' or cap_type == 'wlan_access_point':
+                return 'W'
+            elif cap_type == 'switch':
+                return 'S'
+
+        # Check for boolean attributes or flags
+        if hasattr(capability, 'router') and capability.router:
+            return 'R'
+        elif hasattr(capability, 'bridge') and capability.bridge:
+            return 'B'
+        elif hasattr(capability, 'mac_bridge') and capability.mac_bridge:
+            return 'B'
+        elif hasattr(capability, 'wlan_access_point') and capability.wlan_access_point:
+            return 'W'
+        elif hasattr(capability, 'switch') and capability.switch:
+            return 'S'
+
+        logger.debug("No recognized capabilities, defaulting to Switch")
+        return 'S'  # Default to Switch instead of Other to match old code
 
     def _populate_data(self, data_root, lldp_data, state):
         """Populate the LLDP neighbor data into the output structure."""
         logger.debug("Filling in neighbor data")
-        hold_time = self._get_hold_time(state)  # Get dynamic hold_time
+        hold_time = self._get_hold_time(state)
         interfaces = lldp_data.get_descendants('/system/lldp/interface')
-        
+        total = 0
+
         for iface in interfaces:
             local_intf = getattr(iface, 'name', 'Unknown')
             if not hasattr(iface, 'neighbor'):
@@ -97,7 +137,7 @@ class Plugin(CliPlugin):
 
             for neighbor in iface.neighbor.items():
                 device_id = getattr(neighbor, 'system_name', 'Unknown')
-                capability = 'S'  # Default to Switch
+                capability = self._get_capability(neighbor)
                 port_id = getattr(neighbor, 'port_id', 'Unknown')
 
                 logger.debug(f"Adding {device_id} for {local_intf}")
@@ -106,6 +146,9 @@ class Plugin(CliPlugin):
                 row.hold_time = hold_time
                 row.capability = capability
                 row.port_id = port_id
+                total += 1
+
+        return total
 
     def _set_formatters(self, data):
         """Set up the table formatting for Cisco-style output."""
@@ -114,7 +157,7 @@ class Plugin(CliPlugin):
         data.set_formatter(
             '/neighbors',
             ColumnFormatter(
-                widths={'Local_Intf': 18, 'Device_ID': 18, 'Hold_time': 12, 'Capability': 12, 'Port_ID': 18},
+                widths={'Local_Intf': 13, 'Device_ID': 11, 'Hold_time': 9, 'Capability': 10, 'Port_ID': 12},
                 borders=Borders.Nothing
             )
         )
@@ -122,16 +165,22 @@ class Plugin(CliPlugin):
 class CiscoTableFormatter(Formatter):
     def iter_format(self, entry, max_width):
         """Format the LLDP neighbor data in a Cisco-style table."""
-        yield "Capability codes: (R) Router, (B) Bridge, (W) WLAN AP, (S) Switch, (O) Other"
-        yield ""
-        yield "{:<18} {:<18} {:<12} {:<12} {:<18}".format("Device ID", "Local Intf", "Hold-time", "Capability", "Port ID")
-        yield "-" * 78
-        total = 0
+        logger.debug("Formatting table in CiscoTableFormatter")
+        yield "  {} {}  {} {}  {}".format(
+            "Local_Intf",
+            "Device_ID",
+            "Hold_time",
+            "Capability",
+            "Port_ID"
+        )
         for row in entry.neighbors.values():
-            yield "{:<18} {:<18} {:<12} {:<12} {:<18}".format(row.device_id, row.local_intf, row.hold_time, row.capability, row.port_id)
-            total += 1
-        yield ""
-        yield f"Total entries: {total}"
+            yield "{} {}  {} {}  {}".format(
+                row.local_intf.ljust(13),
+                row.device_id.ljust(11),
+                row.hold_time.ljust(9),
+                row.capability.ljust(10),
+                row.port_id.ljust(12)
+            )
 
 if __name__ == '__main__':
     Plugin()
